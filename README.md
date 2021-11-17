@@ -4,7 +4,6 @@
 
 ----
 
-[![](https://img.shields.io/packagist/l/bitbag/elasticsearch-plugin.svg) ](https://packagist.org/packages/bitbag/elasticsearch-plugin "License") 
 
 
 
@@ -211,6 +210,6 @@ This plugin's source code is completely free and released under the terms of the
 ## Contact
 
 ---
-If you want to contact us, the best way is to fill the form on [our website](https://bitbag.io/contact-us/?utm_source=github&utm_medium=referral&utm_campaign=plugins_elasticsearch) or send us an e-mail to hello@bitbag.io with your question(s). We guarantee that we answer as soon as we can!
+If you want to contact us, the best way is to fill the form on [our website](https://bitbag.io/contact-us/?utm_source=github&utm_medium=referral&utm_campaign=coding-standard) or send us an e-mail to hello@bitbag.io with your question(s). We guarantee that we answer as soon as we can!
 
-[![](https://bitbag.io/wp-content/uploads/2021/08/badges-bitbag.png)](https://bitbag.io/contact-us/?utm_source=github&utm_medium=referral&utm_campaign=plugins_elasticsearch)
+[![](https://bitbag.io/wp-content/uploads/2021/08/badges-bitbag.png)](https://bitbag.io/contact-us/?utm_source=github&utm_medium=referral&utm_campaign=coding-standard)
