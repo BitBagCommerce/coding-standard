@@ -98,11 +98,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
 Just like with standard ECS, for example to check /src dir:
 ```bash
-vendor/bin/ecs check src
+./vendor/bin/ecs check src
 ```
 If ECS found any standard violations, you can fix it by:
 ```bash
-vendor/bin/ecs check src --fix
+./vendor/bin/ecs check src --fix
 ```
 ## Customization
 
