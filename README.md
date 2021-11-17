@@ -54,7 +54,7 @@ Add repository and require-dev to your `composer.json`
 "repositories": [
   {
     "type": "vcs",
-    "url": "git@github.com:BitbagCommerce/coding-standard.git"
+    "url": "git@github.com:BitBagCommerce/coding-standard.git"
   }
 ],
 "require-dev": {
