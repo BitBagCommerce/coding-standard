@@ -17,7 +17,7 @@ Like what we do? Want to join us? Check out our job listings on our [career page
 
 * [Overview](#overview)
 * [Support](#we-are-here-to-help)
-* [Installation without packagist](#installation-without-packagist)
+* [Installation](#installation)
     * [Usage](#usage)
     * [Customization](#customization)
 * [About us](#about-us)
@@ -30,7 +30,7 @@ Like what we do? Want to join us? Check out our job listings on our [career page
 
 ----
 [BitBag](https://bitbag.io/) coding standard helps you produce solid and maintainable code.
-At [BitBag Coding Bible](https://github.com/BitBagCommerce/BitBagBible) you can get familiar with standard we have 
+At [BitBag Coding Bible](https://github.com/BitBagCommerce/BitBagBible) you can get familiar with standard we have
 implemented in our library. [ECS](https://github.com/symplify/easy-coding-standard)
 and [PHPStan](https://github.com/phpstan/phpstan) are responsible for keeping your code in order.
 
@@ -40,36 +40,11 @@ This **open-source library was developed to help the community**. If you have an
 [![](https://bitbag.io/wp-content/uploads/2020/10/button-contact.png)](https://bitbag.io/contact-us/?utm_source=github&utm_medium=referral&utm_campaign=plugins_elasticsearch)
 
 
-
-# Installation without packagist
-
-----
-
-We work on stable, supported and up-to-date versions of packages. We recommend you to do the same.
-
-
-Add repository and require-dev to your `composer.json`
-
-```json
-"repositories": [
-  {
-    "type": "vcs",
-    "url": "git@github.com:BitBagCommerce/coding-standard.git"
-  }
-],
-"require-dev": {
-  "bitbag/coding-standards": "dev-main",
-}
-
-```
-
-Install package with composer  
+# Installation
 
 ```bash
-composer update
+composer require bitbag/coding-standard --dev
 ```
-
-
 
 Create `ecs.php` file with following lines or add import line to your existing file if you have one
 ```php
@@ -159,7 +134,7 @@ If you need some help with Sylius development, don't be hesitated to contact us 
 
 ## Community
 
----- 
+----
 
 For online communication, we invite you to chat with us & other users on [Sylius Slack](https://sylius-devs.slack.com/).
 

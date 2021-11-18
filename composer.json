@@ -4,9 +4,7 @@
     "description": "BitBag coding standard",
     "license": "MIT",
     "require": {
-        "php": "^7.3 || ^7.4 || ^8.0"
-    },
-    "require-dev": {
+        "php": "^7.3 || ^7.4 || ^8.0",
         "phpstan/extension-installer": "^1.0",
         "phpstan/phpstan": "0.12.82",
         "phpstan/phpstan-doctrine": "0.12.33",
