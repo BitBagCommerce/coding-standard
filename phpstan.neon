@@ -6,13 +6,13 @@ parameters:
 
     excludePaths:
         # Makes PHPStan crash
-        - 'src/DependencyInjection/Configuration.php'
+        - '../../../src/DependencyInjection/Configuration.php'
 
         # Test dependencies
-        - 'tests/Application/app/**.php'
-        - 'tests/Application/src/**.php'
+        - '../../../tests/Application/app/**.php'
+        - '../../../tests/Application/src/**.php'
 
         # ECS Fixer dependency
-        - 'src/Fixer'
+        - '../../../src/Fixer'
     ignoreErrors:
         - '/Parameter #1 \$configuration of method Symfony\\Component\\DependencyInjection\\Extension\\Extension::processConfiguration\(\) expects Symfony\\Component\\Config\\Definition\\ConfigurationInterface, Symfony\\Component\\Config\\Definition\\ConfigurationInterface\|null given\./'
