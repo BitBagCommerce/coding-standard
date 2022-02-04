@@ -11,7 +11,7 @@ use PhpCsFixer\FixerDefinition\FixerDefinitionInterface;
 use PhpCsFixer\Tokenizer\Tokens;
 use SplFileInfo;
 
-final class FinalClassInEntitiesOrRepositoriesFixer implements FixerInterface
+final class FinalClassInEntitiesFixer implements FixerInterface
 {
     public function isCandidate(Tokens $tokens): bool
     {
@@ -42,13 +42,13 @@ final class FinalClassInEntitiesOrRepositoriesFixer implements FixerInterface
     public function getDefinition(): FixerDefinitionInterface
     {
         return new FixerDefinition(
-            'Repositories and Entities should not be defined as final.',
+            'Entities should not be defined as final.',
             [
                 new CodeSample(
                     '<?php
                            declare(strict_types=1);
                            namespace App\Entity;
-                           final class Product
+                           class Product
                            {
                            }
                            '
@@ -69,6 +69,6 @@ final class FinalClassInEntitiesOrRepositoriesFixer implements FixerInterface
 
     public function supports(SplFileInfo $file): bool
     {
-        return str_contains($file->getPath(), 'src/Entity') || str_contains($file->getPath(), 'src/Repository');
+        return str_contains($file->getPath(), 'src/Entity');
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use BitBag\CodingStandard\Fixer\FinalClassInEntitiesOrRepositoriesFixer;
+use BitBag\CodingStandard\Fixer\FinalClassInEntitiesFixer;
 use BitBag\CodingStandard\Fixer\AboveTwoArgumentsMultilineFixer;
 use PhpCsFixer\Fixer\Alias\EregToPregFixer;
 use PhpCsFixer\Fixer\Alias\NoAliasFunctionsFixer;
@@ -391,9 +391,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(RequireOneLinePropertyDocCommentSniff::class);
 
     $services->set(YodaStyleFixer::class)->call('configure',[['equal' => true, 'identical' => true, 'less_and_greater' => true,]]);
-    
-    $services->set(FinalClassInEntitiesOrRepositoriesFixer::class);
-  
+
+    $services->set(FinalClassInEntitiesFixer::class);
+
     $services->set(AboveTwoArgumentsMultilineFixer::class);
 };
-
