@@ -48,7 +48,7 @@ final class FinalClassInEntitiesFixer implements FixerInterface
                     '<?php
                            declare(strict_types=1);
                            namespace App\Entity;
-                           class Product
+                           final class Product
                            {
                            }
                            '
