@@ -69,6 +69,6 @@ final class FinalClassInEntitiesFixer implements FixerInterface
 
     public function supports(SplFileInfo $file): bool
     {
-        return strpos($file->getPath(), 'src/Entity') !== false;
+        return strpos($file->getPath(), 'src/Entity/') !== false;
     }
 }
