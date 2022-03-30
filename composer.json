@@ -4,12 +4,12 @@
     "description": "BitBag coding standard",
     "license": "MIT",
     "require": {
-        "php": "^7.3 || ^7.4 || ^8.0",
+        "php": "^7.4 || ^8.0",
         "phpstan/extension-installer": "^1.0",
-        "phpstan/phpstan": "^0.12",
-        "phpstan/phpstan-doctrine": "^0.12",
-        "phpstan/phpstan-strict-rules": "^0.12.0",
-        "phpstan/phpstan-webmozart-assert": "^0.12",
+        "phpstan/phpstan": "^1.4",
+        "phpstan/phpstan-doctrine": "^1.0",
+        "phpstan/phpstan-strict-rules": "^1.0",
+        "phpstan/phpstan-webmozart-assert": "^1.0",
         "symplify/easy-coding-standard": "^9.4",
         "friendsofphp/php-cs-fixer": "^3.0",
         "slevomat/coding-standard": "^7.0"
