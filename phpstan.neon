@@ -4,13 +4,13 @@ parameters:
     checkMissingIterableValueType: false
     checkGenericClassInNonGenericObjectType: false
 
-    excludes_analyse:
+    excludePaths:
         # Makes PHPStan crash
-        - 'src/DependencyInjection/Configuration.php'
+        - '../../../src/DependencyInjection/Configuration.php'
 
         # Test dependencies
-        - 'tests/Application/app/**.php'
-        - 'tests/Application/src/**.php'
+        - '../../../tests/Application/app/**.php'
+        - '../../../tests/Application/src/**.php'
 
         # ECS Fixer dependency
         - 'src/Fixer'
