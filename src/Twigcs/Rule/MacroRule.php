@@ -61,7 +61,7 @@ final class MacroRule extends AbstractRule implements RuleInterface
                     $filename,
                     $token->getLine(),
                     $token->getColumn(),
-                    Ruleset::MULTIPLE_MACROS_IN_THE_SAME_FILE
+                    Ruleset::ERROR_MULTIPLE_MACROS
                 );
             }
         }
@@ -76,7 +76,7 @@ final class MacroRule extends AbstractRule implements RuleInterface
                 $filename,
                 $token->getLine(),
                 $token->getColumn(),
-                Ruleset::MACRO_IN_THE_TEMPLATE
+                Ruleset::ERROR_MACRO_IN_TEMPLATE
             );
         }
 

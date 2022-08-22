@@ -45,7 +45,7 @@ final class WhitespaceRule extends AbstractRule implements RuleInterface
                             $tokens->getSourceContext()->getPath(),
                             $token->getLine() + $offset->getLine(),
                             $offset->getColumn(),
-                            sprintf(Ruleset::MULTIPLE_WHITESPACES, $tag->getTag())
+                            sprintf(Ruleset::ERROR_MULTIPLE_WHITESPACES, $tag->getTag())
                         );
                     }
                 }

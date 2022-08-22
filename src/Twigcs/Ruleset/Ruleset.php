@@ -21,10 +21,11 @@ use FriendsOfTwig\Twigcs\Validator\Violation;
 
 final class Ruleset implements RulesetInterface
 {
-    public const UNCLOSED_VOID_HTML_TAG = 'Unclosed %s HTML void tag';
-    public const MULTIPLE_MACROS_IN_THE_SAME_FILE = 'Multiple macros in the same file';
-    public const MACRO_IN_THE_TEMPLATE = 'Macro in the template file';
-    public const MULTIPLE_WHITESPACES = 'Multiple whitespaces in %s HTML tag';
+    public const ERROR_UNCLOSED_VOID_HTML_TAG = 'Unclosed <%s> HTML void tag';
+    public const ERROR_MULTIPLE_MACROS = 'Multiple macros in the same file';
+    public const ERROR_MACRO_IN_TEMPLATE = 'Macro in the template file';
+    public const ERROR_MULTIPLE_WHITESPACES = 'Multiple whitespaces in <%s> HTML tag';
+    public const ERROR_APOSTROPHE_IN_ATTRIBUTE = 'Apostrophe instead of quote in <%s> HTML tag attributes';
 
     /** @var int */
     private $twigMajorVersion;
@@ -51,6 +52,7 @@ final class Ruleset implements RulesetInterface
             new BitBagRule\VoidHtmlTagRule(Violation::SEVERITY_ERROR, $htmlUtil),
             new BitBagRule\MacroRule(Violation::SEVERITY_ERROR),
             new BitBagRule\WhitespaceRule(Violation::SEVERITY_ERROR, $htmlUtil),
+            new BitBagRule\QuoteHtmlTagAttributeRule(Violation::SEVERITY_ERROR, $htmlUtil),
 
             new TwigcsRule\RegEngineRule(Violation::SEVERITY_ERROR, $twigcsRulesetBuilder->build()),
             new TwigcsRule\LowerCaseVariable(Violation::SEVERITY_ERROR),
