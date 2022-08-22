@@ -44,7 +44,7 @@ final class HtmlUtil
     {
         $ret = [];
 
-        if (preg_match_all(self::HTML_TAG_PATTERN, $html, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER)) {
+        if (preg_match_all(self::HTML_TAG_PATTERN, $html, $matches, self::REGEX_FLAGS)) {
             foreach ($matches as $match) {
                 $ret[] = (new HtmlTagDto())
                     ->setTag($match['tag'][0])

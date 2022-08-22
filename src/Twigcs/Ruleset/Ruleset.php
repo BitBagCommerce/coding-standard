@@ -27,6 +27,7 @@ final class Ruleset implements RulesetInterface
     public const ERROR_MULTIPLE_WHITESPACES = 'Multiple whitespaces in <%s> HTML tag';
     public const ERROR_APOSTROPHE_IN_ATTRIBUTE = 'Apostrophe instead of quote in <%s> HTML tag attributes';
     public const ERROR_NO_SPACE_BETWEEN_ATTRIBUTES = 'No space between attributes in <%s> HTML tag';
+    public const ERROR_NO_NEWLINE_AT_THE_END = 'No newline at the end of the file';
 
     /** @var int */
     private $twigMajorVersion;
@@ -55,6 +56,7 @@ final class Ruleset implements RulesetInterface
             new BitBagRule\MultipleWhitespaceInAttributeRule(Violation::SEVERITY_ERROR, $htmlUtil),
             new BitBagRule\QuoteInAttributeRule(Violation::SEVERITY_ERROR, $htmlUtil),
             new BitBagRule\NoSpaceInAttributeRule(Violation::SEVERITY_ERROR, $htmlUtil),
+            new BitBagRule\NoNewlineAtTheEndRule(Violation::SEVERITY_ERROR, $htmlUtil),
 
             new TwigcsRule\RegEngineRule(Violation::SEVERITY_ERROR, $twigcsRulesetBuilder->build()),
             new TwigcsRule\LowerCaseVariable(Violation::SEVERITY_ERROR),
