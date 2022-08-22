@@ -11,18 +11,16 @@ declare(strict_types=1);
 
 namespace BitBag\CodingStandard\Twigcs\Rule;
 
-use BitBag\CodingStandard\Twigcs\Dto\HtmlTagDto;
 use BitBag\CodingStandard\Twigcs\Ruleset\Ruleset;
 use BitBag\CodingStandard\Twigcs\Util\HtmlUtil;
 use FriendsOfTwig\Twigcs\Rule\AbstractRule;
 use FriendsOfTwig\Twigcs\Rule\RuleInterface;
 use FriendsOfTwig\Twigcs\TwigPort\TokenStream;
 
-final class VoidHtmlTagRule extends AbstractRule implements RuleInterface
+final class NoSpaceInAttributeRule extends AbstractRule implements RuleInterface
 {
-    private const VOID_HTML_TAGS = [
-        'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'
-    ];
+    /** @var string */
+    private $pattern = '#=\s*("[^"]*"|\'[^\']*\')(?<offset>[^\s/>])#s';
 
     /** @var HtmlUtil */
     private $htmlUtil;
@@ -43,14 +41,14 @@ final class VoidHtmlTagRule extends AbstractRule implements RuleInterface
 
             if ($content = $this->htmlUtil->getHtmlContentOnly($token)) {
                 foreach ($this->htmlUtil->getParsedHtmlTags($content) as $tag) {
-                    if ($this->isViolation($tag)) {
-                        $offset = $this->htmlUtil->getTwigcsOffset($content, $tag->getOffset());
+                    foreach ($this->getViolationNoSpaces($tag->getHtmlLine()) as $noSpace) {
+                        $offset = $this->htmlUtil->getTwigcsOffset($content, $tag->getOffset() + $noSpace['offset'][1]);
 
                         $violations[] = $this->createViolation(
                             $tokens->getSourceContext()->getPath(),
                             $token->getLine() + $offset->getLine(),
                             $offset->getColumn(),
-                            sprintf(Ruleset::ERROR_UNCLOSED_VOID_HTML_TAG, $tag->getTag())
+                            sprintf(Ruleset::ERROR_NO_SPACE_BETWEEN_ATTRIBUTES, $tag->getTag())
                         );
                     }
                 }
@@ -62,9 +60,10 @@ final class VoidHtmlTagRule extends AbstractRule implements RuleInterface
         return $violations;
     }
 
-    private function isViolation(HtmlTagDto $tag): bool
+    private function getViolationNoSpaces(string $html): array
     {
-        return in_array($tag->getTag(), self::VOID_HTML_TAGS)
-            && !preg_match('#/\s*>$#', $tag->getHtmlLine());
+        return preg_match_all($this->pattern, $html, $noSpaces, HtmlUtil::REGEX_FLAGS)
+            ? $noSpaces
+            : [];
     }
 }

@@ -11,14 +11,23 @@ declare(strict_types=1);
 
 namespace BitBag\CodingStandard\Twigcs\Rule;
 
+use BitBag\CodingStandard\Twigcs\Dto\HtmlTagDto;
 use BitBag\CodingStandard\Twigcs\Ruleset\Ruleset;
 use BitBag\CodingStandard\Twigcs\Util\HtmlUtil;
 use FriendsOfTwig\Twigcs\Rule\AbstractRule;
 use FriendsOfTwig\Twigcs\Rule\RuleInterface;
 use FriendsOfTwig\Twigcs\TwigPort\TokenStream;
 
-final class QuoteHtmlTagAttributeRule extends AbstractRule implements RuleInterface
+final class VoidTagRule extends AbstractRule implements RuleInterface
 {
+    /** @var string[] */
+    private $tags = [
+        'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'
+    ];
+
+    /** @var string */
+    private $pattern = '#/\s*>$#';
+
     /** @var HtmlUtil */
     private $htmlUtil;
 
@@ -38,14 +47,14 @@ final class QuoteHtmlTagAttributeRule extends AbstractRule implements RuleInterf
 
             if ($content = $this->htmlUtil->getHtmlContentOnly($token)) {
                 foreach ($this->htmlUtil->getParsedHtmlTags($content) as $tag) {
-                    foreach ($this->getViolationQuotes($tag->getHtmlLine()) as $quote) {
-                        $offset = $this->htmlUtil->getTwigcsOffset($content, $tag->getOffset() + $quote[1][1]);
+                    if ($this->isViolation($tag)) {
+                        $offset = $this->htmlUtil->getTwigcsOffset($content, $tag->getOffset());
 
                         $violations[] = $this->createViolation(
                             $tokens->getSourceContext()->getPath(),
                             $token->getLine() + $offset->getLine(),
                             $offset->getColumn(),
-                            sprintf(Ruleset::ERROR_APOSTROPHE_IN_ATTRIBUTE, $tag->getTag())
+                            sprintf(Ruleset::ERROR_UNCLOSED_VOID_HTML_TAG, $tag->getTag())
                         );
                     }
                 }
@@ -57,10 +66,9 @@ final class QuoteHtmlTagAttributeRule extends AbstractRule implements RuleInterf
         return $violations;
     }
 
-    private function getViolationQuotes(string $html): array
+    private function isViolation(HtmlTagDto $tag): bool
     {
-        return preg_match_all("#=\s*(')#", $html, $quotes, PREG_OFFSET_CAPTURE | PREG_SET_ORDER)
-            ? $quotes
-            : [];
+        return in_array($tag->getTag(), $this->tags)
+            && !preg_match($this->pattern, $tag->getHtmlLine());
     }
 }

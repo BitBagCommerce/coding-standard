@@ -17,8 +17,11 @@ use FriendsOfTwig\Twigcs\Rule\AbstractRule;
 use FriendsOfTwig\Twigcs\Rule\RuleInterface;
 use FriendsOfTwig\Twigcs\TwigPort\TokenStream;
 
-final class WhitespaceRule extends AbstractRule implements RuleInterface
+final class MultipleWhitespaceInAttributeRule extends AbstractRule implements RuleInterface
 {
+    /** @var string */
+    private $pattern = '#(?<offset>\s{2,})#';
+
     /** @var HtmlUtil */
     private $htmlUtil;
 
@@ -39,7 +42,7 @@ final class WhitespaceRule extends AbstractRule implements RuleInterface
             if ($content = $this->htmlUtil->getHtmlContentOnly($token)) {
                 foreach ($this->htmlUtil->getParsedHtmlTags($content) as $tag) {
                     foreach ($this->getViolationSpaces($tag->getHtmlLine()) as $space) {
-                        $offset = $this->htmlUtil->getTwigcsOffset($content, $tag->getOffset() + $space[0][1]);
+                        $offset = $this->htmlUtil->getTwigcsOffset($content, $tag->getOffset() + $space['offset'][1]);
 
                         $violations[] = $this->createViolation(
                             $tokens->getSourceContext()->getPath(),
@@ -59,7 +62,7 @@ final class WhitespaceRule extends AbstractRule implements RuleInterface
 
     private function getViolationSpaces(string $html): array
     {
-        return preg_match_all('#\s{2,}#', $html, $spaces, PREG_OFFSET_CAPTURE | PREG_SET_ORDER)
+        return preg_match_all($this->pattern, $html, $spaces, HtmlUtil::REGEX_FLAGS)
             ? $spaces
             : [];
     }

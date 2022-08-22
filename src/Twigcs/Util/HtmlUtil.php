@@ -17,6 +17,8 @@ use FriendsOfTwig\Twigcs\TwigPort\Token;
 
 final class HtmlUtil
 {
+    public const REGEX_FLAGS = PREG_OFFSET_CAPTURE | PREG_SET_ORDER;
+
     private const UNNECESSARY_TAGS = [
         '#<!--(.*?)-->#s',
         '#<!\[CDATA\[(.*?)\]\]>#s',

@@ -26,6 +26,7 @@ final class Ruleset implements RulesetInterface
     public const ERROR_MACRO_IN_TEMPLATE = 'Macro in the template file';
     public const ERROR_MULTIPLE_WHITESPACES = 'Multiple whitespaces in <%s> HTML tag';
     public const ERROR_APOSTROPHE_IN_ATTRIBUTE = 'Apostrophe instead of quote in <%s> HTML tag attributes';
+    public const ERROR_NO_SPACE_BETWEEN_ATTRIBUTES = 'No space between attributes in <%s> HTML tag';
 
     /** @var int */
     private $twigMajorVersion;
@@ -49,10 +50,11 @@ final class Ruleset implements RulesetInterface
         $htmlUtil = new HtmlUtil();
 
         return [
-            new BitBagRule\VoidHtmlTagRule(Violation::SEVERITY_ERROR, $htmlUtil),
+            new BitBagRule\VoidTagRule(Violation::SEVERITY_ERROR, $htmlUtil),
             new BitBagRule\MacroRule(Violation::SEVERITY_ERROR),
-            new BitBagRule\WhitespaceRule(Violation::SEVERITY_ERROR, $htmlUtil),
-            new BitBagRule\QuoteHtmlTagAttributeRule(Violation::SEVERITY_ERROR, $htmlUtil),
+            new BitBagRule\MultipleWhitespaceInAttributeRule(Violation::SEVERITY_ERROR, $htmlUtil),
+            new BitBagRule\QuoteInAttributeRule(Violation::SEVERITY_ERROR, $htmlUtil),
+            new BitBagRule\NoSpaceInAttributeRule(Violation::SEVERITY_ERROR, $htmlUtil),
 
             new TwigcsRule\RegEngineRule(Violation::SEVERITY_ERROR, $twigcsRulesetBuilder->build()),
             new TwigcsRule\LowerCaseVariable(Violation::SEVERITY_ERROR),
