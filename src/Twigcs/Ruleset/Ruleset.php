@@ -28,6 +28,7 @@ final class Ruleset implements RulesetInterface
     public const ERROR_APOSTROPHE_IN_ATTRIBUTE = 'Apostrophe instead of quote in <%s> HTML tag attributes';
     public const ERROR_NO_SPACE_BETWEEN_ATTRIBUTES = 'No space between attributes in <%s> HTML tag';
     public const ERROR_NO_NEWLINE_AT_THE_END = 'No newline at the end of the file';
+    public const ERROR_LINE_TOO_LONG = 'Line is too long';
 
     /** @var int */
     private $twigMajorVersion;
@@ -57,6 +58,7 @@ final class Ruleset implements RulesetInterface
             new BitBagRule\QuoteInAttributeRule(Violation::SEVERITY_ERROR, $htmlUtil),
             new BitBagRule\NoSpaceInAttributeRule(Violation::SEVERITY_ERROR, $htmlUtil),
             new BitBagRule\NoNewlineAtTheEndRule(Violation::SEVERITY_ERROR, $htmlUtil),
+            new BitBagRule\LineLengthRule(Violation::SEVERITY_ERROR),
 
             new TwigcsRule\RegEngineRule(Violation::SEVERITY_ERROR, $twigcsRulesetBuilder->build()),
             new TwigcsRule\LowerCaseVariable(Violation::SEVERITY_ERROR),
