@@ -34,7 +34,7 @@ final class LineLengthRule extends AbstractRule implements RuleInterface
                     $tokens->getSourceContext()->getPath(),
                     $lineNumber + 1,
                     $this->maxLineLength - 1,
-                    Ruleset::ERROR_LINE_TOO_LONG
+                    sprintf(Ruleset::ERROR_LINE_TOO_LONG, $this->maxLineLength)
                 );
             }
         }

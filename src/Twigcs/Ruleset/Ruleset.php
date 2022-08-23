@@ -21,15 +21,15 @@ use FriendsOfTwig\Twigcs\Validator\Violation;
 
 final class Ruleset implements RulesetInterface
 {
-    public const ERROR_UNCLOSED_VOID_HTML_TAG = 'Unclosed <%s> HTML void tag';
-    public const ERROR_MULTIPLE_MACROS = 'Multiple macros in the same file';
-    public const ERROR_MACRO_IN_TEMPLATE = 'Macro in the template file';
-    public const ERROR_MULTIPLE_WHITESPACES = 'Multiple whitespaces in <%s> HTML tag';
-    public const ERROR_APOSTROPHE_IN_ATTRIBUTE = 'Apostrophe instead of quote in <%s> HTML tag attributes';
-    public const ERROR_NO_SPACE_BETWEEN_ATTRIBUTES = 'No space between attributes in <%s> HTML tag';
-    public const ERROR_NO_NEWLINE_AT_THE_END = 'No newline at the end of the file';
-    public const ERROR_LINE_TOO_LONG = 'Line is too long';
-    public const ERROR_MULTIPLE_EMPTY_LINES = 'Multiple empty lines';
+    public const ERROR_UNCLOSED_VOID_HTML_TAG = '<%s> HTML void tag should be closed.';
+    public const ERROR_MULTIPLE_MACROS = 'There should not be many macros in the same file.';
+    public const ERROR_MACRO_IN_TEMPLATE = 'There should not be macro in the template file.';
+    public const ERROR_MULTIPLE_WHITESPACES = 'There should not be many whitespaces in <%s> HTML tag attributes.';
+    public const ERROR_APOSTROPHE_IN_ATTRIBUTE = 'A quote should be used instead of apostrophe in <%s> HTML tag attributes.';
+    public const ERROR_NO_SPACE_BETWEEN_ATTRIBUTES = 'There should be a space between attributes in <%s> HTML tag.';
+    public const ERROR_NO_NEWLINE_AT_THE_END = 'There should be a newline at the end of the file.';
+    public const ERROR_LINE_TOO_LONG = 'Line should be up to %d characters long.';
+    public const ERROR_MULTIPLE_EMPTY_LINES = 'There should not be so many empty lines.';
 
     /** @var int */
     private $twigMajorVersion;
