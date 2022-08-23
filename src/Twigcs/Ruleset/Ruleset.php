@@ -30,6 +30,7 @@ final class Ruleset implements RulesetInterface
     public const ERROR_NO_NEWLINE_AT_THE_END = 'There should be a newline at the end of the file.';
     public const ERROR_LINE_TOO_LONG = 'Line should be up to %d characters long.';
     public const ERROR_MULTIPLE_EMPTY_LINES = 'There should not be so many empty lines.';
+    public const ERROR_NEW_LINE_AFTER_SET = 'There should be a new line after twig {% set %} declaration.';
 
     /** @var int */
     private $twigMajorVersion;
@@ -61,6 +62,7 @@ final class Ruleset implements RulesetInterface
             new BitBagRule\NoNewlineAtTheEndRule(Violation::SEVERITY_ERROR, $htmlUtil),
             new BitBagRule\LineLengthRule(Violation::SEVERITY_ERROR),
             new BitBagRule\MultipleEmptyLineRule(Violation::SEVERITY_ERROR, $htmlUtil),
+            new BitBagRule\NewlineAfterSetRule(Violation::SEVERITY_ERROR, $htmlUtil),
 
             new TwigcsRule\LowerCaseVariable(Violation::SEVERITY_ERROR),
             new TwigcsRule\RegEngineRule(Violation::SEVERITY_ERROR, $twigcsRulesetBuilder->build()),
