@@ -30,10 +30,13 @@ final class HtmlUtil
 
     private const HTML_TAG_PATTERN = '#</?\s*(?<tag>\w+)[^>]*>#s';
 
+    /** @var array */
+    private $unnecessaryTagsPositions = [];
+
     public function getHtmlContentOnly(Token $token): ?string
     {
         return Token::TEXT_TYPE === $token->getType()
-            ? $this->stripUnnecessaryTags($token->getValue())
+            ? $this->stripUnnecessaryTagsAndSavePositions($token->getValue())
             : null;
     }
 
@@ -67,9 +70,21 @@ final class HtmlUtil
             ->setColumn(mb_strlen($lines[$linesCount]));
     }
 
-    private function stripUnnecessaryTags(string $html): string
+    public function isInsideUnnecessaryTag(int $position): bool
+    {
+        foreach ($this->unnecessaryTagsPositions as $tagsPosition) {
+            if ($tagsPosition[0] <= $position && $position < $tagsPosition[1]) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function stripUnnecessaryTagsAndSavePositions(string $html): string
     {
         $tags = [];
+        $this->unnecessaryTagsPositions = [];
 
         foreach (self::UNNECESSARY_TAGS as $tag) {
             $tags[$tag] = function ($m) { return $this->replaceToTwigcsStringPad($m[0]); };
@@ -77,14 +92,25 @@ final class HtmlUtil
 
         return preg_replace_callback_array(
             $tags,
-            str_replace("\r", '', $html)
+            str_replace("\r", '', $html),
+            -1,
+            $count,
+            self::REGEX_FLAGS
         );
     }
 
-    private function replaceToTwigcsStringPad(string $match): string
+    private function replaceToTwigcsStringPad(array $match): string
     {
-        $newLinesCount = mb_substr_count($match, "\n");
+        $html = $match[0];
+        $offset = $match[1];
 
-        return str_pad('', mb_strlen($match), 'A') . str_repeat("\n", $newLinesCount);
+        $matchLength = mb_strlen($html);
+        $matchLinesCount = mb_substr_count($html, "\n");
+
+        $this->unnecessaryTagsPositions[] = [
+            $offset, $offset + $matchLength,
+        ];
+
+        return str_pad('', $matchLength, 'A') . str_repeat("\n", $matchLinesCount);
     }
 }

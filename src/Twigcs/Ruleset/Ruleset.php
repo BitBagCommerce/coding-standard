@@ -29,6 +29,7 @@ final class Ruleset implements RulesetInterface
     public const ERROR_NO_SPACE_BETWEEN_ATTRIBUTES = 'No space between attributes in <%s> HTML tag';
     public const ERROR_NO_NEWLINE_AT_THE_END = 'No newline at the end of the file';
     public const ERROR_LINE_TOO_LONG = 'Line is too long';
+    public const ERROR_MULTIPLE_EMPTY_LINES = 'Multiple empty lines';
 
     /** @var int */
     private $twigMajorVersion;
@@ -59,13 +60,14 @@ final class Ruleset implements RulesetInterface
             new BitBagRule\NoSpaceInAttributeRule(Violation::SEVERITY_ERROR, $htmlUtil),
             new BitBagRule\NoNewlineAtTheEndRule(Violation::SEVERITY_ERROR, $htmlUtil),
             new BitBagRule\LineLengthRule(Violation::SEVERITY_ERROR),
+            new BitBagRule\MultipleEmptyLineRule(Violation::SEVERITY_ERROR, $htmlUtil),
 
-            new TwigcsRule\RegEngineRule(Violation::SEVERITY_ERROR, $twigcsRulesetBuilder->build()),
             new TwigcsRule\LowerCaseVariable(Violation::SEVERITY_ERROR),
-            new TwigcsRule\ForbiddenFunctions(Violation::SEVERITY_ERROR, $this->forbiddenTwigFunctions),
+            new TwigcsRule\RegEngineRule(Violation::SEVERITY_ERROR, $twigcsRulesetBuilder->build()),
             new TwigcsRule\TrailingSpace(Violation::SEVERITY_ERROR),
-            new TwigcsRule\UnusedMacro(Violation::SEVERITY_ERROR),
-            new TwigcsRule\UnusedVariable(Violation::SEVERITY_ERROR),
+            new TwigcsRule\ForbiddenFunctions(Violation::SEVERITY_ERROR, $this->forbiddenTwigFunctions),
+            new TwigcsRule\UnusedMacro(Violation::SEVERITY_WARNING),
+            new TwigcsRule\UnusedVariable(Violation::SEVERITY_WARNING),
         ];
     }
 }
