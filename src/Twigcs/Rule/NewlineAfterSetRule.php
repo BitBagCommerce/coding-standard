@@ -20,7 +20,7 @@ use FriendsOfTwig\Twigcs\TwigPort\TokenStream;
 final class NewlineAfterSetRule extends AbstractRule implements RuleInterface
 {
     /** @var string */
-    private $pattern = "#set[^%}]+%\s*}[^\S\n]*(?<offset>[^\n])#s";
+    private $pattern = '#set[^%}]+%\s*}[^\S\n]*(?<offset>[^\n])#s';
 
     /** @var HtmlUtil */
     private $htmlUtil;

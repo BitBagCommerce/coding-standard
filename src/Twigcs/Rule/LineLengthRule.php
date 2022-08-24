@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace BitBag\CodingStandard\Twigcs\Rule;
 
 use BitBag\CodingStandard\Twigcs\Ruleset\Ruleset;
+use BitBag\CodingStandard\Twigcs\Util\HtmlUtil;
 use FriendsOfTwig\Twigcs\Rule\AbstractRule;
 use FriendsOfTwig\Twigcs\Rule\RuleInterface;
 use FriendsOfTwig\Twigcs\TwigPort\TokenStream;
@@ -21,6 +22,16 @@ final class LineLengthRule extends AbstractRule implements RuleInterface
     /** @var int */
     private $maxLineLength = 120;
 
+    /** @var HtmlUtil */
+    private $htmlUtil;
+
+    public function __construct($severity, HtmlUtil $htmlUtil)
+    {
+        parent::__construct($severity);
+
+        $this->htmlUtil = $htmlUtil;
+    }
+
     public function check(TokenStream $tokens)
     {
         $violations = [];
@@ -28,22 +39,30 @@ final class LineLengthRule extends AbstractRule implements RuleInterface
         $content = str_replace("\r", '', $tokens->getSourceContext()->getCode());
         $lines = explode("\n", $content);
 
+        $this->htmlUtil->stripUnnecessaryTagsAndSavePositions($content);
+        $currentPosition = 0;
+
         foreach ($lines as $lineNumber => $line) {
-            if ($this->lineIsTooLong($line)) {
+            $lineLength = mb_strlen($line);
+            $currentPosition += $lineLength;
+
+            if ($this->isLineTooLong($lineLength) && !$this->htmlUtil->isInsideUnnecessaryTag($currentPosition)) {
                 $violations[] = $this->createViolation(
                     $tokens->getSourceContext()->getPath(),
                     $lineNumber + 1,
-                    $this->maxLineLength - 1,
+                    $this->maxLineLength,
                     sprintf(Ruleset::ERROR_LINE_TOO_LONG, $this->maxLineLength)
                 );
             }
+
+            ++$currentPosition;
         }
 
         return $violations;
     }
 
-    private function lineIsTooLong(string $line): bool
+    private function isLineTooLong(int $lineLength): bool
     {
-        return mb_strlen($line) > $this->maxLineLength;
+        return $lineLength > $this->maxLineLength;
     }
 }

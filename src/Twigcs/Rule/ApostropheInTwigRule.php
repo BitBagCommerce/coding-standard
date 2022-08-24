@@ -11,22 +11,19 @@ declare(strict_types=1);
 
 namespace BitBag\CodingStandard\Twigcs\Rule;
 
-use BitBag\CodingStandard\Twigcs\Dto\HtmlTagDto;
 use BitBag\CodingStandard\Twigcs\Ruleset\Ruleset;
 use BitBag\CodingStandard\Twigcs\Util\HtmlUtil;
 use FriendsOfTwig\Twigcs\Rule\AbstractRule;
 use FriendsOfTwig\Twigcs\Rule\RuleInterface;
 use FriendsOfTwig\Twigcs\TwigPort\TokenStream;
 
-final class VoidTagRule extends AbstractRule implements RuleInterface
+final class ApostropheInTwigRule extends AbstractRule implements RuleInterface
 {
-    /** @var string[] */
-    private $tags = [
-        'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'
-    ];
+    /** @var string */
+    private $patternTwigTags = '#\{(\{|%).*?(\}|%)\}#s';
 
     /** @var string */
-    private $pattern = '#/\s*>$#';
+    private $patternQuotes = '#(?<offset>")[^"]*"#s';
 
     /** @var HtmlUtil */
     private $htmlUtil;
@@ -41,17 +38,22 @@ final class VoidTagRule extends AbstractRule implements RuleInterface
     public function check(TokenStream $tokens)
     {
         $violations = [];
+
         $content = $this->htmlUtil->stripUnnecessaryTagsAndSavePositions($tokens->getSourceContext()->getCode());
 
-        foreach ($this->htmlUtil->getParsedHtmlTags($content) as $tag) {
-            if ($this->isTagUnclosed($tag)) {
-                $offset = $this->htmlUtil->getTwigcsOffset($content, $tag->getOffset());
+        foreach ($this->getMatches($this->patternTwigTags, $content) as $tag) {
+            if ($this->htmlUtil->isInsideUnnecessaryTag($tag[0][1])) {
+                continue;
+            }
+
+            foreach ($this->getMatches($this->patternQuotes, $tag[0][0]) as $quote) {
+                $offset = $this->htmlUtil->getTwigcsOffset($content, $tag[0][1] + $quote['offset'][1]);
 
                 $violations[] = $this->createViolation(
                     $tokens->getSourceContext()->getPath(),
                     $offset->getLine(),
                     $offset->getColumn(),
-                    sprintf(Ruleset::ERROR_UNCLOSED_VOID_HTML_TAG, $tag->getTag())
+                    Ruleset::ERROR_QUOTE_IN_TWIG
                 );
             }
         }
@@ -59,9 +61,10 @@ final class VoidTagRule extends AbstractRule implements RuleInterface
         return $violations;
     }
 
-    private function isTagUnclosed(HtmlTagDto $tag): bool
+    private function getMatches(string $pattern, string $content): array
     {
-        return in_array($tag->getTag(), $this->tags)
-            && !preg_match($this->pattern, $tag->getHtmlLine());
+        return preg_match_all($pattern, $content, $matches, HtmlUtil::REGEX_FLAGS)
+            ? $matches
+            : [];
     }
 }

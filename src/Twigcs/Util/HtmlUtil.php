@@ -13,13 +13,13 @@ namespace BitBag\CodingStandard\Twigcs\Util;
 
 use BitBag\CodingStandard\Twigcs\Dto\HtmlTagDto;
 use BitBag\CodingStandard\Twigcs\Dto\OffsetDto;
-use FriendsOfTwig\Twigcs\TwigPort\Token;
 
 final class HtmlUtil
 {
     public const REGEX_FLAGS = PREG_OFFSET_CAPTURE | PREG_SET_ORDER;
 
     private const UNNECESSARY_TAGS = [
+        '|{#(.*?)#}|s',
         '#<!--(.*?)-->#s',
         '#<!\[CDATA\[(.*?)\]\]>#s',
         '#<\s*script[^>]*[^/]>(.*?)<\s*/\s*script\s*>#s',
@@ -28,17 +28,10 @@ final class HtmlUtil
         '#<\s*style\s*>(.*?)<\s*/\s*style\s*>#s',
     ];
 
-    private const HTML_TAG_PATTERN = '#</?\s*(?<tag>\w+)[^>]*>#s';
+    private const HTML_TAG_PATTERN = '#</?\s*(?<tag>\w+).*?>#s';
 
     /** @var array */
     private $unnecessaryTagsPositions = [];
-
-    public function getHtmlContentOnly(Token $token): ?string
-    {
-        return Token::TEXT_TYPE === $token->getType()
-            ? $this->stripUnnecessaryTagsAndSavePositions($token->getValue())
-            : null;
-    }
 
     /**
      * @return HtmlTagDto[]
@@ -63,11 +56,11 @@ final class HtmlUtil
     {
         $substr = mb_substr($html, 0, $length);
         $lines = explode("\n", $substr);
-        $linesCount = count($lines) - 1;
+        $linesCount = count($lines);
 
         return (new OffsetDto())
             ->setLine($linesCount)
-            ->setColumn(mb_strlen($lines[$linesCount]));
+            ->setColumn(mb_strlen($lines[$linesCount - 1]) + 1);
     }
 
     public function isInsideUnnecessaryTag(int $position): bool
@@ -111,6 +104,6 @@ final class HtmlUtil
             $offset, $offset + $matchLength,
         ];
 
-        return str_pad('', $matchLength, 'A') . str_repeat("\n", $matchLinesCount);
+        return str_pad('', $matchLength - $matchLinesCount, 'A') . str_repeat("\n", $matchLinesCount);
     }
 }

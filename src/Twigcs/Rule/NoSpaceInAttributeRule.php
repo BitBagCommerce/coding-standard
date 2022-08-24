@@ -35,26 +35,19 @@ final class NoSpaceInAttributeRule extends AbstractRule implements RuleInterface
     public function check(TokenStream $tokens)
     {
         $violations = [];
+        $content = $this->htmlUtil->stripUnnecessaryTagsAndSavePositions($tokens->getSourceContext()->getCode());
 
-        while (!$tokens->isEOF()) {
-            $token = $tokens->getCurrent();
+        foreach ($this->htmlUtil->getParsedHtmlTags($content) as $tag) {
+            foreach ($this->getViolationNoSpaces($tag->getHtmlLine()) as $noSpace) {
+                $offset = $this->htmlUtil->getTwigcsOffset($content, $tag->getOffset() + $noSpace['offset'][1]);
 
-            if ($content = $this->htmlUtil->getHtmlContentOnly($token)) {
-                foreach ($this->htmlUtil->getParsedHtmlTags($content) as $tag) {
-                    foreach ($this->getViolationNoSpaces($tag->getHtmlLine()) as $noSpace) {
-                        $offset = $this->htmlUtil->getTwigcsOffset($content, $tag->getOffset() + $noSpace['offset'][1]);
-
-                        $violations[] = $this->createViolation(
-                            $tokens->getSourceContext()->getPath(),
-                            $token->getLine() + $offset->getLine(),
-                            $offset->getColumn(),
-                            sprintf(Ruleset::ERROR_NO_SPACE_BETWEEN_ATTRIBUTES, $tag->getTag())
-                        );
-                    }
-                }
+                $violations[] = $this->createViolation(
+                    $tokens->getSourceContext()->getPath(),
+                    $offset->getLine(),
+                    $offset->getColumn(),
+                    sprintf(Ruleset::ERROR_NO_SPACE_BETWEEN_ATTRIBUTES, $tag->getTag())
+                );
             }
-
-            $tokens->next();
         }
 
         return $violations;

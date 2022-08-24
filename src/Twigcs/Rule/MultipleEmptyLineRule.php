@@ -20,10 +20,12 @@ use FriendsOfTwig\Twigcs\TwigPort\TokenStream;
 final class MultipleEmptyLineRule extends AbstractRule implements RuleInterface
 {
     /** @var string */
-    private $pattern = "#(?<offset>\n{3,})#s";
+    private $pattern = '#(?<offset>\n{3,})#s';
 
     /** @var HtmlUtil */
     private $htmlUtil;
+
+    private $lineNumberOffset = 2;
 
     public function __construct($severity, HtmlUtil $htmlUtil)
     {
@@ -44,7 +46,7 @@ final class MultipleEmptyLineRule extends AbstractRule implements RuleInterface
                 continue;
             }
 
-            $offset = $this->htmlUtil->getTwigcsOffset($content, $multiline['offset'][1] + 3);
+            $offset = $this->htmlUtil->getTwigcsOffset($content, $multiline['offset'][1] + $this->lineNumberOffset);
 
             $violations[] = $this->createViolation(
                 $tokens->getSourceContext()->getPath(),

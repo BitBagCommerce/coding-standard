@@ -35,26 +35,19 @@ final class QuoteInAttributeRule extends AbstractRule implements RuleInterface
     public function check(TokenStream $tokens)
     {
         $violations = [];
+        $content = $this->htmlUtil->stripUnnecessaryTagsAndSavePositions($tokens->getSourceContext()->getCode());
 
-        while (!$tokens->isEOF()) {
-            $token = $tokens->getCurrent();
+        foreach ($this->htmlUtil->getParsedHtmlTags($content) as $tag) {
+            foreach ($this->getViolationQuotes($tag->getHtmlLine()) as $quote) {
+                $offset = $this->htmlUtil->getTwigcsOffset($content, $tag->getOffset() + $quote['offset'][1]);
 
-            if ($content = $this->htmlUtil->getHtmlContentOnly($token)) {
-                foreach ($this->htmlUtil->getParsedHtmlTags($content) as $tag) {
-                    foreach ($this->getViolationQuotes($tag->getHtmlLine()) as $quote) {
-                        $offset = $this->htmlUtil->getTwigcsOffset($content, $tag->getOffset() + $quote['offset'][1]);
-
-                        $violations[] = $this->createViolation(
-                            $tokens->getSourceContext()->getPath(),
-                            $token->getLine() + $offset->getLine(),
-                            $offset->getColumn(),
-                            sprintf(Ruleset::ERROR_APOSTROPHE_IN_ATTRIBUTE, $tag->getTag())
-                        );
-                    }
-                }
+                $violations[] = $this->createViolation(
+                    $tokens->getSourceContext()->getPath(),
+                    $offset->getLine(),
+                    $offset->getColumn(),
+                    sprintf(Ruleset::ERROR_APOSTROPHE_IN_ATTRIBUTE, $tag->getTag())
+                );
             }
-
-            $tokens->next();
         }
 
         return $violations;

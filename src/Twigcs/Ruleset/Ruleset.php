@@ -22,15 +22,16 @@ use FriendsOfTwig\Twigcs\Validator\Violation;
 final class Ruleset implements RulesetInterface
 {
     public const ERROR_UNCLOSED_VOID_HTML_TAG = '<%s> HTML void tag should be closed.';
-    public const ERROR_MULTIPLE_MACROS = 'There should not be many macros in the same file.';
-    public const ERROR_MACRO_IN_TEMPLATE = 'There should not be macro in the template file.';
-    public const ERROR_MULTIPLE_WHITESPACES = 'There should not be many whitespaces in <%s> HTML tag attributes.';
+    public const ERROR_MULTIPLE_MACROS = 'There should only be one macro in the same file.';
+    public const ERROR_MACRO_IN_TEMPLATE = 'There should not be a macro in the template file.';
+    public const ERROR_MULTIPLE_WHITESPACES = 'There should not be so many whitespaces in <%s> HTML tag attributes.';
     public const ERROR_APOSTROPHE_IN_ATTRIBUTE = 'A quote should be used instead of apostrophe in <%s> HTML tag attributes.';
-    public const ERROR_NO_SPACE_BETWEEN_ATTRIBUTES = 'There should be a space between attributes in <%s> HTML tag.';
+    public const ERROR_NO_SPACE_BETWEEN_ATTRIBUTES = 'There should be a whitespace between attributes in <%s> HTML tag.';
     public const ERROR_NO_NEWLINE_AT_THE_END = 'There should be a newline at the end of the file.';
     public const ERROR_LINE_TOO_LONG = 'Line should be up to %d characters long.';
     public const ERROR_MULTIPLE_EMPTY_LINES = 'There should not be so many empty lines.';
     public const ERROR_NEW_LINE_AFTER_SET = 'There should be a new line after twig {% set %} declaration.';
+    public const ERROR_QUOTE_IN_TWIG = 'An apostrophe should be used instead of quote in Twig tag.';
 
     /** @var int */
     private $twigMajorVersion;
@@ -60,9 +61,10 @@ final class Ruleset implements RulesetInterface
             new BitBagRule\QuoteInAttributeRule(Violation::SEVERITY_ERROR, $htmlUtil),
             new BitBagRule\NoSpaceInAttributeRule(Violation::SEVERITY_ERROR, $htmlUtil),
             new BitBagRule\NoNewlineAtTheEndRule(Violation::SEVERITY_ERROR, $htmlUtil),
-            new BitBagRule\LineLengthRule(Violation::SEVERITY_ERROR),
+            new BitBagRule\LineLengthRule(Violation::SEVERITY_ERROR, $htmlUtil),
             new BitBagRule\MultipleEmptyLineRule(Violation::SEVERITY_ERROR, $htmlUtil),
             new BitBagRule\NewlineAfterSetRule(Violation::SEVERITY_ERROR, $htmlUtil),
+            new BitBagRule\ApostropheInTwigRule(Violation::SEVERITY_ERROR, $htmlUtil),
 
             new TwigcsRule\LowerCaseVariable(Violation::SEVERITY_ERROR),
             new TwigcsRule\RegEngineRule(Violation::SEVERITY_ERROR, $twigcsRulesetBuilder->build()),
