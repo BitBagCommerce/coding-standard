@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace BitBag\CodingStandard\Twigcs\Rule;
+namespace BitBag\CodingStandard\Twigcs\Rule\Twig;
 
 use BitBag\CodingStandard\Twigcs\Ruleset\Ruleset;
 use BitBag\CodingStandard\Twigcs\Util\HtmlUtil;
@@ -17,10 +17,13 @@ use FriendsOfTwig\Twigcs\Rule\AbstractRule;
 use FriendsOfTwig\Twigcs\Rule\RuleInterface;
 use FriendsOfTwig\Twigcs\TwigPort\TokenStream;
 
-final class MultipleWhitespaceInAttributeRule extends AbstractRule implements RuleInterface
+final class QuoteInTwigRule extends AbstractRule implements RuleInterface
 {
     /** @var string */
-    private $pattern = '#(?<offset>\s{2,})#';
+    private $patternTwigTags = '#\{(\{|%).*?(\}|%)\}#s';
+
+    /** @var string */
+    private $patternQuotes = '#(?<offset>")[^"]*"#s';
 
     /** @var HtmlUtil */
     private $htmlUtil;
@@ -35,17 +38,22 @@ final class MultipleWhitespaceInAttributeRule extends AbstractRule implements Ru
     public function check(TokenStream $tokens)
     {
         $violations = [];
+
         $content = $this->htmlUtil->stripUnnecessaryTagsAndSavePositions($tokens->getSourceContext()->getCode());
 
-        foreach ($this->htmlUtil->getParsedHtmlTags($content) as $tag) {
-            foreach ($this->getViolationSpaces($tag->getHtmlLine()) as $space) {
-                $offset = $this->htmlUtil->getTwigcsOffset($content, $tag->getOffset() + $space['offset'][1]);
+        foreach ($this->getMatches($this->patternTwigTags, $content) as $tag) {
+            if ($this->htmlUtil->isInsideUnnecessaryTag($tag[0][1])) {
+                continue;
+            }
+
+            foreach ($this->getMatches($this->patternQuotes, $tag[0][0]) as $quote) {
+                $offset = $this->htmlUtil->getTwigcsOffset($content, $tag[0][1] + $quote['offset'][1]);
 
                 $violations[] = $this->createViolation(
                     $tokens->getSourceContext()->getPath(),
                     $offset->getLine(),
                     $offset->getColumn(),
-                    sprintf(Ruleset::ERROR_MULTIPLE_WHITESPACES, $tag->getTag())
+                    Ruleset::ERROR_QUOTE_IN_TWIG
                 );
             }
         }
@@ -53,10 +61,10 @@ final class MultipleWhitespaceInAttributeRule extends AbstractRule implements Ru
         return $violations;
     }
 
-    private function getViolationSpaces(string $html): array
+    private function getMatches(string $pattern, string $content): array
     {
-        return preg_match_all($this->pattern, $html, $spaces, HtmlUtil::REGEX_FLAGS)
-            ? $spaces
+        return preg_match_all($pattern, $content, $matches, HtmlUtil::REGEX_FLAGS)
+            ? $matches
             : [];
     }
 }

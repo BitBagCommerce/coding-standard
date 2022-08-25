@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace BitBag\CodingStandard\Twigcs\Rule;
+namespace BitBag\CodingStandard\Twigcs\Rule\Twig;
 
 use BitBag\CodingStandard\Twigcs\Ruleset\Ruleset;
 use FriendsOfTwig\Twigcs\Rule\AbstractRule;
@@ -20,8 +20,11 @@ use FriendsOfTwig\Twigcs\Validator\Violation;
 
 final class MacroRule extends AbstractRule implements RuleInterface
 {
-    private const TWIG_TAG_MACRO = 'macro';
-    private const TWIG_TAG_SELF = '_self';
+    /** @var string */
+    private $twigTagMacro = 'macro';
+
+    /** @var string */
+    private $twigTagSelfMacro = '_self';
 
     /** @var bool */
     private $isMacro;
@@ -52,7 +55,7 @@ final class MacroRule extends AbstractRule implements RuleInterface
     {
         if (
             Token::NAME_TYPE === $token->getType()
-            && self::TWIG_TAG_MACRO === $token->getValue()
+            && $this->twigTagMacro === $token->getValue()
         ) {
             if (!$this->isMacro) {
                 $this->isMacro = true;
@@ -86,7 +89,7 @@ final class MacroRule extends AbstractRule implements RuleInterface
     private function isSelfTagUsedForMacro(TokenStream $tokens, Token $token): bool
     {
         return Token::NAME_TYPE === $token->getType()
-            && self::TWIG_TAG_SELF === $token->getValue()
+            && $this->twigTagSelfMacro === $token->getValue()
 
             && Token::PUNCTUATION_TYPE === $tokens->look(1)->getType()
             && '.' === $tokens->look(1)->getValue()

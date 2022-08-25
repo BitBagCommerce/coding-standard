@@ -17,11 +17,8 @@ use FriendsOfTwig\Twigcs\Rule\AbstractRule;
 use FriendsOfTwig\Twigcs\Rule\RuleInterface;
 use FriendsOfTwig\Twigcs\TwigPort\TokenStream;
 
-final class NewlineAfterSetRule extends AbstractRule implements RuleInterface
+final class NewlineAtTheEndRule extends AbstractRule implements RuleInterface
 {
-    /** @var string */
-    private $pattern = '#set[^%}]+%\s*}[^\S\n]*(?<offset>[^\n])#s';
-
     /** @var HtmlUtil */
     private $htmlUtil;
 
@@ -37,30 +34,23 @@ final class NewlineAfterSetRule extends AbstractRule implements RuleInterface
         $violations = [];
 
         $content = str_replace("\r", '', $tokens->getSourceContext()->getCode());
-        $this->htmlUtil->stripUnnecessaryTagsAndSavePositions($content);
 
-        foreach ($this->getNoNewlinesAfterSet($content) as $noNewLine) {
-            if ($this->htmlUtil->isInsideUnnecessaryTag($noNewLine['offset'][1])) {
-                continue;
-            }
-
-            $offset = $this->htmlUtil->getTwigcsOffset($content, $noNewLine['offset'][1]);
+        if ($this->isNoNewline($content)) {
+            $offset = $this->htmlUtil->getTwigcsOffset($content, mb_strlen($content));
 
             $violations[] = $this->createViolation(
                 $tokens->getSourceContext()->getPath(),
-                $offset->getLine(),
+                $offset->getLine() + 1,
                 $offset->getColumn(),
-                Ruleset::ERROR_NEW_LINE_AFTER_SET
+                Ruleset::ERROR_NO_NEW_LINE_AT_THE_END
             );
         }
 
         return $violations;
     }
 
-    private function getNoNewlinesAfterSet(string $content): array
+    private function isNoNewline(string $content): bool
     {
-        return preg_match_all($this->pattern, $content, $noNewLines, HtmlUtil::REGEX_FLAGS)
-            ? $noNewLines
-            : [];
+        return $content && "\n" !== mb_substr($content, -1);
     }
 }

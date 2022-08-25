@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace BitBag\CodingStandard\Twigcs\Rule;
+namespace BitBag\CodingStandard\Twigcs\Rule\Html;
 
 use BitBag\CodingStandard\Twigcs\Ruleset\Ruleset;
 use BitBag\CodingStandard\Twigcs\Util\HtmlUtil;
@@ -17,13 +17,10 @@ use FriendsOfTwig\Twigcs\Rule\AbstractRule;
 use FriendsOfTwig\Twigcs\Rule\RuleInterface;
 use FriendsOfTwig\Twigcs\TwigPort\TokenStream;
 
-final class ApostropheInTwigRule extends AbstractRule implements RuleInterface
+final class ApostropheInAttributesRule extends AbstractRule implements RuleInterface
 {
     /** @var string */
-    private $patternTwigTags = '#\{(\{|%).*?(\}|%)\}#s';
-
-    /** @var string */
-    private $patternQuotes = '#(?<offset>")[^"]*"#s';
+    private $pattern = "#=\s*(?<offset>')#";
 
     /** @var HtmlUtil */
     private $htmlUtil;
@@ -38,22 +35,17 @@ final class ApostropheInTwigRule extends AbstractRule implements RuleInterface
     public function check(TokenStream $tokens)
     {
         $violations = [];
-
         $content = $this->htmlUtil->stripUnnecessaryTagsAndSavePositions($tokens->getSourceContext()->getCode());
 
-        foreach ($this->getMatches($this->patternTwigTags, $content) as $tag) {
-            if ($this->htmlUtil->isInsideUnnecessaryTag($tag[0][1])) {
-                continue;
-            }
-
-            foreach ($this->getMatches($this->patternQuotes, $tag[0][0]) as $quote) {
-                $offset = $this->htmlUtil->getTwigcsOffset($content, $tag[0][1] + $quote['offset'][1]);
+        foreach ($this->htmlUtil->getParsedHtmlTags($content) as $tag) {
+            foreach ($this->getApostrophes($tag->getHtml()) as $apostrophe) {
+                $offset = $this->htmlUtil->getTwigcsOffset($content, $tag->getOffset() + $apostrophe['offset'][1]);
 
                 $violations[] = $this->createViolation(
                     $tokens->getSourceContext()->getPath(),
                     $offset->getLine(),
                     $offset->getColumn(),
-                    Ruleset::ERROR_QUOTE_IN_TWIG
+                    sprintf(Ruleset::ERROR_APOSTROPHE_IN_ATTRIBUTE, $tag->getTag())
                 );
             }
         }
@@ -61,10 +53,10 @@ final class ApostropheInTwigRule extends AbstractRule implements RuleInterface
         return $violations;
     }
 
-    private function getMatches(string $pattern, string $content): array
+    private function getApostrophes(string $html): array
     {
-        return preg_match_all($pattern, $content, $matches, HtmlUtil::REGEX_FLAGS)
-            ? $matches
+        return preg_match_all($this->pattern, $html, $quotes, HtmlUtil::REGEX_FLAGS)
+            ? $quotes
             : [];
     }
 }

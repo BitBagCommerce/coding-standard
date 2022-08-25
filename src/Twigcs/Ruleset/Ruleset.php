@@ -27,10 +27,10 @@ final class Ruleset implements RulesetInterface
     public const ERROR_MULTIPLE_WHITESPACES = 'There should not be so many whitespaces in <%s> HTML tag attributes.';
     public const ERROR_APOSTROPHE_IN_ATTRIBUTE = 'A quote should be used instead of apostrophe in <%s> HTML tag attributes.';
     public const ERROR_NO_SPACE_BETWEEN_ATTRIBUTES = 'There should be a whitespace between attributes in <%s> HTML tag.';
-    public const ERROR_NO_NEWLINE_AT_THE_END = 'There should be a newline at the end of the file.';
+    public const ERROR_NO_NEW_LINE_AT_THE_END = 'There should be a new line at the end of the file.';
     public const ERROR_LINE_TOO_LONG = 'Line should be up to %d characters long.';
     public const ERROR_MULTIPLE_EMPTY_LINES = 'There should not be so many empty lines.';
-    public const ERROR_NEW_LINE_AFTER_SET = 'There should be a new line after twig {% set %} declaration.';
+    public const ERROR_NO_NEW_LINE_AFTER_SET = 'There should be a new line after twig {% set %} declaration.';
     public const ERROR_QUOTE_IN_TWIG = 'An apostrophe should be used instead of quote in Twig tag.';
 
     /** @var int */
@@ -55,21 +55,23 @@ final class Ruleset implements RulesetInterface
         $htmlUtil = new HtmlUtil();
 
         return [
-            new BitBagRule\VoidTagRule(Violation::SEVERITY_ERROR, $htmlUtil),
-            new BitBagRule\MacroRule(Violation::SEVERITY_ERROR),
-            new BitBagRule\MultipleWhitespaceInAttributeRule(Violation::SEVERITY_ERROR, $htmlUtil),
-            new BitBagRule\QuoteInAttributeRule(Violation::SEVERITY_ERROR, $htmlUtil),
-            new BitBagRule\NoSpaceInAttributeRule(Violation::SEVERITY_ERROR, $htmlUtil),
-            new BitBagRule\NoNewlineAtTheEndRule(Violation::SEVERITY_ERROR, $htmlUtil),
+            new BitBagRule\EmptyLinesRule(Violation::SEVERITY_ERROR, $htmlUtil),
             new BitBagRule\LineLengthRule(Violation::SEVERITY_ERROR, $htmlUtil),
-            new BitBagRule\MultipleEmptyLineRule(Violation::SEVERITY_ERROR, $htmlUtil),
-            new BitBagRule\NewlineAfterSetRule(Violation::SEVERITY_ERROR, $htmlUtil),
-            new BitBagRule\ApostropheInTwigRule(Violation::SEVERITY_ERROR, $htmlUtil),
+            new BitBagRule\NewlineAtTheEndRule(Violation::SEVERITY_ERROR, $htmlUtil),
 
+            new BitBagRule\Html\ApostropheInAttributesRule(Violation::SEVERITY_ERROR, $htmlUtil),
+            new BitBagRule\Html\MultiWhitespaceInAttributesRule(Violation::SEVERITY_ERROR, $htmlUtil),
+            new BitBagRule\Html\UnclosedVoidTagsRule(Violation::SEVERITY_ERROR, $htmlUtil),
+            new BitBagRule\Html\WhitespaceInAttributesRule(Violation::SEVERITY_ERROR, $htmlUtil),
+
+            new BitBagRule\Twig\MacroRule(Violation::SEVERITY_ERROR),
+            new BitBagRule\Twig\NewlineAfterSetRule(Violation::SEVERITY_ERROR, $htmlUtil),
+            new BitBagRule\Twig\QuoteInTwigRule(Violation::SEVERITY_ERROR, $htmlUtil),
+
+            new TwigcsRule\ForbiddenFunctions(Violation::SEVERITY_ERROR, $this->forbiddenTwigFunctions),
             new TwigcsRule\LowerCaseVariable(Violation::SEVERITY_ERROR),
             new TwigcsRule\RegEngineRule(Violation::SEVERITY_ERROR, $twigcsRulesetBuilder->build()),
             new TwigcsRule\TrailingSpace(Violation::SEVERITY_ERROR),
-            new TwigcsRule\ForbiddenFunctions(Violation::SEVERITY_ERROR, $this->forbiddenTwigFunctions),
             new TwigcsRule\UnusedMacro(Violation::SEVERITY_WARNING),
             new TwigcsRule\UnusedVariable(Violation::SEVERITY_WARNING),
         ];

@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace BitBag\CodingStandard\Twigcs\Rule;
+namespace BitBag\CodingStandard\Twigcs\Rule\Twig;
 
 use BitBag\CodingStandard\Twigcs\Ruleset\Ruleset;
 use BitBag\CodingStandard\Twigcs\Util\HtmlUtil;
@@ -17,15 +17,13 @@ use FriendsOfTwig\Twigcs\Rule\AbstractRule;
 use FriendsOfTwig\Twigcs\Rule\RuleInterface;
 use FriendsOfTwig\Twigcs\TwigPort\TokenStream;
 
-final class MultipleEmptyLineRule extends AbstractRule implements RuleInterface
+final class NewlineAfterSetRule extends AbstractRule implements RuleInterface
 {
     /** @var string */
-    private $pattern = '#(?<offset>\n{3,})#s';
+    private $pattern = '#set[^%}]+%\s*}[^\S\n]*(?<offset>[^\n])#s';
 
     /** @var HtmlUtil */
     private $htmlUtil;
-
-    private $lineNumberOffset = 2;
 
     public function __construct($severity, HtmlUtil $htmlUtil)
     {
@@ -41,28 +39,28 @@ final class MultipleEmptyLineRule extends AbstractRule implements RuleInterface
         $content = str_replace("\r", '', $tokens->getSourceContext()->getCode());
         $this->htmlUtil->stripUnnecessaryTagsAndSavePositions($content);
 
-        foreach ($this->getMultilines($content) as $multiline) {
-            if ($this->htmlUtil->isInsideUnnecessaryTag($multiline['offset'][1])) {
+        foreach ($this->getNoNewlinesAfterSet($content) as $noNewLine) {
+            if ($this->htmlUtil->isInsideUnnecessaryTag($noNewLine['offset'][1])) {
                 continue;
             }
 
-            $offset = $this->htmlUtil->getTwigcsOffset($content, $multiline['offset'][1] + $this->lineNumberOffset);
+            $offset = $this->htmlUtil->getTwigcsOffset($content, $noNewLine['offset'][1]);
 
             $violations[] = $this->createViolation(
                 $tokens->getSourceContext()->getPath(),
                 $offset->getLine(),
-                0,
-                Ruleset::ERROR_MULTIPLE_EMPTY_LINES
+                $offset->getColumn(),
+                Ruleset::ERROR_NO_NEW_LINE_AFTER_SET
             );
         }
 
         return $violations;
     }
 
-    private function getMultilines(string $content): array
+    private function getNoNewlinesAfterSet(string $content): array
     {
-        return preg_match_all($this->pattern, $content, $multilines, HtmlUtil::REGEX_FLAGS)
-            ? $multilines
+        return preg_match_all($this->pattern, $content, $noNewLines, HtmlUtil::REGEX_FLAGS)
+            ? $noNewLines
             : [];
     }
 }

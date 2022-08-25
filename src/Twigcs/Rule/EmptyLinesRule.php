@@ -17,10 +17,16 @@ use FriendsOfTwig\Twigcs\Rule\AbstractRule;
 use FriendsOfTwig\Twigcs\Rule\RuleInterface;
 use FriendsOfTwig\Twigcs\TwigPort\TokenStream;
 
-final class NoNewlineAtTheEndRule extends AbstractRule implements RuleInterface
+final class EmptyLinesRule extends AbstractRule implements RuleInterface
 {
+    /** @var string */
+    private $pattern = '#(?<offset>\n{3,})#s';
+
     /** @var HtmlUtil */
     private $htmlUtil;
+
+    /** @var int */
+    private $lineNumberOffset = 2;
 
     public function __construct($severity, HtmlUtil $htmlUtil)
     {
@@ -34,23 +40,30 @@ final class NoNewlineAtTheEndRule extends AbstractRule implements RuleInterface
         $violations = [];
 
         $content = str_replace("\r", '', $tokens->getSourceContext()->getCode());
+        $this->htmlUtil->stripUnnecessaryTagsAndSavePositions($content);
 
-        if ($this->isNoNewline($content)) {
-            $offset = $this->htmlUtil->getTwigcsOffset($content, mb_strlen($content));
+        foreach ($this->getMultiLines($content) as $multiline) {
+            if ($this->htmlUtil->isInsideUnnecessaryTag($multiline['offset'][1])) {
+                continue;
+            }
+
+            $offset = $this->htmlUtil->getTwigcsOffset($content, $multiline['offset'][1] + $this->lineNumberOffset);
 
             $violations[] = $this->createViolation(
                 $tokens->getSourceContext()->getPath(),
-                $offset->getLine() + 1,
-                $offset->getColumn(),
-                Ruleset::ERROR_NO_NEWLINE_AT_THE_END
+                $offset->getLine(),
+                0,
+                Ruleset::ERROR_MULTIPLE_EMPTY_LINES
             );
         }
 
         return $violations;
     }
 
-    private function isNoNewline(string $content): bool
+    private function getMultiLines(string $content): array
     {
-        return $content && "\n" !== mb_substr($content, -1);
+        return preg_match_all($this->pattern, $content, $multilines, HtmlUtil::REGEX_FLAGS)
+            ? $multilines
+            : [];
     }
 }

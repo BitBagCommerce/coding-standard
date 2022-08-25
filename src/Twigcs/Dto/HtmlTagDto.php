@@ -17,7 +17,7 @@ final class HtmlTagDto
     private $tag = '';
 
     /** @var string */
-    private $htmlLine = '';
+    private $html = '';
 
     /** @var int */
     private $offset = 0;
@@ -34,14 +34,14 @@ final class HtmlTagDto
         return $this;
     }
 
-    public function getHtmlLine(): string
+    public function getHtml(): string
     {
-        return $this->htmlLine;
+        return $this->html;
     }
 
-    public function setHtmlLine(string $htmlLine): self
+    public function setHtml(string $html): self
     {
-        $this->htmlLine = $htmlLine;
+        $this->html = $html;
 
         return $this;
     }

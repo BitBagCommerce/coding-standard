@@ -44,7 +44,7 @@ final class HtmlUtil
             foreach ($matches as $match) {
                 $ret[] = (new HtmlTagDto())
                     ->setTag($match['tag'][0])
-                    ->setHtmlLine($match[0][0])
+                    ->setHtml($match[0][0])
                     ->setOffset($match[0][1]);
             }
         }

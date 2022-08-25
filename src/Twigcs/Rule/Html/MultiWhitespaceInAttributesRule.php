@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace BitBag\CodingStandard\Twigcs\Rule;
+namespace BitBag\CodingStandard\Twigcs\Rule\Html;
 
 use BitBag\CodingStandard\Twigcs\Ruleset\Ruleset;
 use BitBag\CodingStandard\Twigcs\Util\HtmlUtil;
@@ -17,10 +17,10 @@ use FriendsOfTwig\Twigcs\Rule\AbstractRule;
 use FriendsOfTwig\Twigcs\Rule\RuleInterface;
 use FriendsOfTwig\Twigcs\TwigPort\TokenStream;
 
-final class QuoteInAttributeRule extends AbstractRule implements RuleInterface
+final class MultiWhitespaceInAttributesRule extends AbstractRule implements RuleInterface
 {
     /** @var string */
-    private $pattern = "#=\s*(?<offset>')#";
+    private $pattern = '#(?<offset>\s{2,})#';
 
     /** @var HtmlUtil */
     private $htmlUtil;
@@ -38,14 +38,14 @@ final class QuoteInAttributeRule extends AbstractRule implements RuleInterface
         $content = $this->htmlUtil->stripUnnecessaryTagsAndSavePositions($tokens->getSourceContext()->getCode());
 
         foreach ($this->htmlUtil->getParsedHtmlTags($content) as $tag) {
-            foreach ($this->getViolationQuotes($tag->getHtmlLine()) as $quote) {
-                $offset = $this->htmlUtil->getTwigcsOffset($content, $tag->getOffset() + $quote['offset'][1]);
+            foreach ($this->getMultiSpaces($tag->getHtml()) as $space) {
+                $offset = $this->htmlUtil->getTwigcsOffset($content, $tag->getOffset() + $space['offset'][1]);
 
                 $violations[] = $this->createViolation(
                     $tokens->getSourceContext()->getPath(),
                     $offset->getLine(),
                     $offset->getColumn(),
-                    sprintf(Ruleset::ERROR_APOSTROPHE_IN_ATTRIBUTE, $tag->getTag())
+                    sprintf(Ruleset::ERROR_MULTIPLE_WHITESPACES, $tag->getTag())
                 );
             }
         }
@@ -53,10 +53,10 @@ final class QuoteInAttributeRule extends AbstractRule implements RuleInterface
         return $violations;
     }
 
-    private function getViolationQuotes(string $html): array
+    private function getMultiSpaces(string $html): array
     {
-        return preg_match_all($this->pattern, $html, $quotes, HtmlUtil::REGEX_FLAGS)
-            ? $quotes
+        return preg_match_all($this->pattern, $html, $spaces, HtmlUtil::REGEX_FLAGS)
+            ? $spaces
             : [];
     }
 }
