@@ -31,8 +31,9 @@ Like what we do? Want to join us? Check out our job listings on our [career page
 ----
 [BitBag](https://bitbag.io/) coding standard helps you produce solid and maintainable code.
 At [BitBag Coding Bible](https://github.com/BitBagCommerce/BitBagBible) you can get familiar with standard we have
-implemented in our library. [ECS](https://github.com/symplify/easy-coding-standard)
-and [PHPStan](https://github.com/phpstan/phpstan) are responsible for keeping your code in order.
+implemented in our library. [ECS](https://github.com/symplify/easy-coding-standard),
+[PHPStan](https://github.com/phpstan/phpstan)
+and [Twigcs](https://github.com/friendsoftwig/twigcs) are responsible for keeping your code in order.
 
 ## We are here to help
 This **open-source library was developed to help the community**. If you have any additional questions, would like help with installing or configuring the plugin, or need any assistance with your project - let us know!
@@ -68,6 +69,23 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
 ```
 
+For Twigcs create `.twig_cs.dist` file with the following lines
+```php
+
+<?php
+
+declare(strict_types=1);
+
+use BitBag\CodingStandard\Twigcs\Ruleset\Ruleset;
+use FriendsOfTwig\Twigcs\Config\Config;
+
+return Config::create()
+    ->setName('bitbag_config')
+    ->setRuleSet(Ruleset::class)
+;
+
+```
+
 
 ## Usage
 
@@ -79,6 +97,11 @@ If ECS found any standard violations, you can fix it by:
 ```bash
 ./vendor/bin/ecs check src --fix
 ```
+To verify your Twig templates in /templates dir:
+```bash
+./vendor/bin/twigcs templates
+```
+
 ## Customization
 
 #### ECS
@@ -98,6 +121,23 @@ You can set PHPStan rule level with following commands
 ./vendor/bin/phpstan analyze --configuration=vendor/bitbag/coding-standard/phpstan.neon tests --level=5
 ```
 
+#### Twigcs
+You can set path to your Twig templates in the configuration file so you don't have to provide it in the twigcs command
+```php
+<?php
+
+declare(strict_types=1);
+
+use BitBag\CodingStandard\Twigcs\Ruleset\Ruleset;
+use FriendsOfTwig\Twigcs\Config\Config;
+use FriendsOfTwig\Twigcs\Finder\TemplateFinder;
+
+return Config::create()
+    ->setName('bitbag_config')
+    ->setRuleSet(Ruleset::class)
+    ->addFinder(TemplateFinder::create()->in(__DIR__.'/templates'))
+;
+```
 
 # About us
 
