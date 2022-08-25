@@ -69,7 +69,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
 ```
 
-For Twigcs create `.twig_cs.dist` file with following lines
+For Twigcs create `.twig_cs.dist` file with the following lines
 ```php
 
 <?php
@@ -97,7 +97,7 @@ If ECS found any standard violations, you can fix it by:
 ```bash
 ./vendor/bin/ecs check src --fix
 ```
-To verify you Twig templates in /templates dir:
+To verify your Twig templates in /templates dir:
 ```bash
 ./vendor/bin/twigcs templates
 ```
