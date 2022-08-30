@@ -29,7 +29,10 @@ final class MacroRule extends AbstractRule implements RuleInterface
     /** @var bool */
     private $isMacro;
 
-    public function check(TokenStream $tokens)
+    /**
+     * @return Violation[]
+     */
+    public function check(TokenStream $tokens): array
     {
         $violations = [];
         $this->isMacro = false;

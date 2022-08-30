@@ -16,6 +16,7 @@ use BitBag\CodingStandard\Twigcs\Util\HtmlUtil;
 use FriendsOfTwig\Twigcs\Rule\AbstractRule;
 use FriendsOfTwig\Twigcs\Rule\RuleInterface;
 use FriendsOfTwig\Twigcs\TwigPort\TokenStream;
+use FriendsOfTwig\Twigcs\Validator\Violation;
 
 final class EmptyLinesRule extends AbstractRule implements RuleInterface
 {
@@ -28,14 +29,17 @@ final class EmptyLinesRule extends AbstractRule implements RuleInterface
     /** @var int */
     private $lineNumberOffset = 2;
 
-    public function __construct($severity, HtmlUtil $htmlUtil)
+    public function __construct(int $severity, HtmlUtil $htmlUtil)
     {
         parent::__construct($severity);
 
         $this->htmlUtil = $htmlUtil;
     }
 
-    public function check(TokenStream $tokens)
+    /**
+     * @return Violation[]
+     */
+    public function check(TokenStream $tokens): array
     {
         $violations = [];
 

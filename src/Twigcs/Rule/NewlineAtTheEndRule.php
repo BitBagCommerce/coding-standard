@@ -16,20 +16,24 @@ use BitBag\CodingStandard\Twigcs\Util\HtmlUtil;
 use FriendsOfTwig\Twigcs\Rule\AbstractRule;
 use FriendsOfTwig\Twigcs\Rule\RuleInterface;
 use FriendsOfTwig\Twigcs\TwigPort\TokenStream;
+use FriendsOfTwig\Twigcs\Validator\Violation;
 
 final class NewlineAtTheEndRule extends AbstractRule implements RuleInterface
 {
     /** @var HtmlUtil */
     private $htmlUtil;
 
-    public function __construct($severity, HtmlUtil $htmlUtil)
+    public function __construct(int $severity, HtmlUtil $htmlUtil)
     {
         parent::__construct($severity);
 
         $this->htmlUtil = $htmlUtil;
     }
 
-    public function check(TokenStream $tokens)
+    /**
+     * @return Violation[]
+     */
+    public function check(TokenStream $tokens): array
     {
         $violations = [];
 
@@ -40,7 +44,7 @@ final class NewlineAtTheEndRule extends AbstractRule implements RuleInterface
 
             $violations[] = $this->createViolation(
                 $tokens->getSourceContext()->getPath(),
-                $offset->getLine() + 1,
+                $offset->getLine(),
                 $offset->getColumn(),
                 Ruleset::ERROR_NO_NEW_LINE_AT_THE_END
             );
