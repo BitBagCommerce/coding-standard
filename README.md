@@ -67,7 +67,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 };
 
 ```
-
+Then create `phpstan.neon` file with the following lines or add include line at the beginning of your existing file if you have one
+```neon
+includes:
+    - vendor/bitbag/coding-standard/phpstan.neon
+```
 
 ## Usage
 
@@ -79,6 +83,11 @@ If ECS found any standard violations, you can fix it by:
 ```bash
 ./vendor/bin/ecs check src --fix
 ```
+To check /src dir by PHPStan:
+```bash
+./vendor/bin/phpstan analyse src
+```
+
 ## Customization
 
 #### ECS
@@ -94,10 +103,20 @@ $services->set(FooBarFixer::class);
 #### PHPStan
 You can set PHPStan rule level with following commands
 ```bash
-./vendor/bin/phpstan analyze --configuration=vendor/bitbag/coding-standard/phpstan.neon src --level=8
-./vendor/bin/phpstan analyze --configuration=vendor/bitbag/coding-standard/phpstan.neon tests --level=5
+./vendor/bin/phpstan analyze src --level=8
+./vendor/bin/phpstan analyze tests --level=5
 ```
+or you can customize configuration in `phpstan.neon` file
+```neon
+includes:
+    - vendor/bitbag/coding-standard/phpstan.neon
 
+parameters:
+    level: max
+    paths:
+        - src
+        - tests
+```
 
 # About us
 
