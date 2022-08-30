@@ -15,9 +15,17 @@
         "slevomat/coding-standard": "^7.0",
         "friendsoftwig/twigcs": "^6.0"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^9"
+    },
     "autoload": {
         "psr-4": {
             "BitBag\\CodingStandard\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "BitBag\\CodingStandard\\Tests": "tests/"
         }
     }
 }
