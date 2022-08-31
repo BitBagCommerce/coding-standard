@@ -397,13 +397,15 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $services->set(AboveTwoArgumentsMultilineFixer::class);
 
-    $services
-        ->set(HeaderCommentFixer::class)
-        ->call('configure', [[
-            "header" => "This file has been created by developers from BitBag. \nFeel free to contact us once you face any issues or want to start\nYou can find more information about us on https://bitbag.io and write us\nan email on hello@bitbag.io.",
-            "location" => "after_open"]]);
+    if (!in_array(getenv('ALLOW_BITBAG_OS_HEADER'), [false, 0, '0'], true)) {
+        $services
+            ->set(HeaderCommentFixer::class)
+            ->call('configure', [[
+                "header" => "This file has been created by developers from BitBag. \nFeel free to contact us once you face any issues or want to start\nYou can find more information about us on https://bitbag.io and write us\nan email on hello@bitbag.io.",
+                "location" => "after_open"]]);
 
-    $parameters = $containerConfigurator->parameters();
+        $parameters = $containerConfigurator->parameters();
 
-    $parameters->set('skip', [HeaderCommentFixer::class => ['Kernel.php', 'Migrations/*']]);
+        $parameters->set('skip', [HeaderCommentFixer::class => ['Kernel.php', 'Migrations/*']]);
+    }
 };
