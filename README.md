@@ -58,7 +58,7 @@ use Symplify\EasyCodingStandard\ValueObject\Option;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
 
-    // Change this if you don't want to automatically add BitBag OpenSource Header
+    // Change this if you want to automatically add BitBag OpenSource Header
     putenv('ALLOW_BITBAG_OS_HEADER=0');
     
     $containerConfigurator->import('vendor/bitbag/coding-standard/ecs.php');
