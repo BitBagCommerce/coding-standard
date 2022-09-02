@@ -38,6 +38,7 @@ use PhpCsFixer\Fixer\ClassNotation\ProtectedToPrivateFixer;
 use PhpCsFixer\Fixer\ClassNotation\SelfAccessorFixer;
 use PhpCsFixer\Fixer\ClassNotation\SingleClassElementPerStatementFixer;
 use PhpCsFixer\Fixer\ClassNotation\VisibilityRequiredFixer;
+use PhpCsFixer\Fixer\Comment\HeaderCommentFixer;
 use PhpCsFixer\Fixer\Comment\NoEmptyCommentFixer;
 use PhpCsFixer\Fixer\Comment\NoTrailingWhitespaceInCommentFixer;
 use PhpCsFixer\Fixer\Comment\SingleLineCommentStyleFixer;
@@ -395,4 +396,16 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services->set(FinalClassInEntitiesFixer::class);
 
     $services->set(AboveTwoArgumentsMultilineFixer::class);
+
+    if (!in_array(getenv('ALLOW_BITBAG_OS_HEADER'), [false, 0, '0'], true)) {
+        $services
+            ->set(HeaderCommentFixer::class)
+            ->call('configure', [[
+                "header" => "This file has been created by developers from BitBag. \nFeel free to contact us once you face any issues or want to start\nYou can find more information about us on https://bitbag.io and write us\nan email on hello@bitbag.io.",
+                "location" => "after_open"]]);
+
+        $parameters = $containerConfigurator->parameters();
+
+        $parameters->set('skip', [HeaderCommentFixer::class => ['Kernel.php', 'Migrations/*']]);
+    }
 };
