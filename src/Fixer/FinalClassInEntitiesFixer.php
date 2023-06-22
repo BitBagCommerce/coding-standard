@@ -51,9 +51,9 @@ final class FinalClassInEntitiesFixer implements FixerInterface
                            final class Product
                            {
                            }
-                           '
+                           ',
                 ),
-            ]
+            ],
         );
     }
 
@@ -69,6 +69,6 @@ final class FinalClassInEntitiesFixer implements FixerInterface
 
     public function supports(SplFileInfo $file): bool
     {
-        return strpos($file->getPath(), 'src/Entity/') !== false;
+        return false !== strpos($file->getPath(), 'src/Entity/');
     }
 }
