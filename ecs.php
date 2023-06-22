@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use BitBag\CodingStandard\Fixer\FinalClassInEntitiesFixer;
 use PhpCsFixer\Fixer\Alias\EregToPregFixer;
 use PhpCsFixer\Fixer\Alias\NoAliasFunctionsFixer;
 use PhpCsFixer\Fixer\Alias\NoMixedEchoPrintFixer;
@@ -149,6 +150,7 @@ return static function (ECSConfig $ecsConfig): void {
         EncodingFixer::class,
         EregToPregFixer::class,
         ErrorSuppressionFixer::class,
+        FinalClassInEntitiesFixer::class,
         FullOpeningTagFixer::class,
         FunctionDeclarationFixer::class,
         FunctionToConstantFixer::class,
