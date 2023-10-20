@@ -122,6 +122,12 @@ parameters:
         - tests
 ```
 
+## Troubleshooting
+
+### Sylius 1.12 support
+
+If you have an issue with dependencies on Sylius v1.12, please upgrade your PHPUnit version to 9.5 or higher.
+
 # About us
 
 ---
@@ -195,7 +201,6 @@ To learn more about our contribution workflow and more, we encourage you to use 
 * [Sylius Documentation](https://docs.sylius.com/en/latest/)
 * [Sylius Contribution Guide](https://docs.sylius.com/en/latest/contributing/)
 * [Sylius Online Course](https://sylius.com/online-course/)
-
 
 ## License
 
