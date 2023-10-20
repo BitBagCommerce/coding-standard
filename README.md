@@ -53,21 +53,15 @@ Create `ecs.php` file with following lines or add import line to your existing f
 
 declare(strict_types=1);
 
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symplify\EasyCodingStandard\ValueObject\Option;
+use Symplify\EasyCodingStandard\Config\ECSConfig;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (ECSConfig $config): void {
 
     // Change this if you want to automatically add BitBag OpenSource Header
     putenv('ALLOW_BITBAG_OS_HEADER=0');
     
-    $containerConfigurator->import('vendor/bitbag/coding-standard/ecs.php');
-
-    $parameters = $containerConfigurator->parameters();
-    $parameters->set(Option::PATHS, [
-        __DIR__ . '/src',
-        __DIR__ . '/tests',
-    ]);
+    $config->import('vendor/bitbag/coding-standard/ecs.php');
+    $config->paths(['src', 'tests']);
 };
 
 ```
@@ -97,10 +91,11 @@ To check /src dir by PHPStan:
 #### ECS
 It's possible to extends `root/ecs.php` by your own fixers
 ```php
+use Symplify\EasyCodingStandard\Config\ECSConfig;
 use Your\Place\For\Fixer\FooBarFixer;
 ...
-return static function (ContainerConfigurator $containerConfigurator): void {
-$services = $containerConfigurator->services();
+return static function (ECSConfig $config): void {
+$services = $config->services();
 $services->set(FooBarFixer::class);
 ```
 
