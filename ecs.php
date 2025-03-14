@@ -133,6 +133,20 @@ use SlevomatCodingStandard\Sniffs\Commenting\InlineDocCommentDeclarationSniff;
 use SlevomatCodingStandard\Sniffs\Commenting\RequireOneLinePropertyDocCommentSniff;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 
+// The definitions below fix issue with issue on annotations
+// [ERROR] System error: "Undefined constant "T_TYPE_CLOSE_PARENTHESIS""Run ECS with "--debug" option and post the report 
+// here: https://github.com/symplify/symplify/issues/new in src/EventListener/AttachmentListener.php:527
+// Reference to files:
+//  - vendor/slevomat/coding-standard/SlevomatCodingStandard/Sniffs/Commenting/RequireOneLinePropertyDocCommentSniff.php:29
+//  - vendor/slevomat/coding-standard/SlevomatCodingStandard/Helpers/TokenHelper.php:520       
+if (!defined('T_TYPE_OPEN_PARENTHESIS')) {
+    define('T_TYPE_OPEN_PARENTHESIS', 'PHPCS_T_TYPE_OPEN_PARENTHESIS');
+}
+
+if (!defined('T_TYPE_CLOSE_PARENTHESIS')) {
+    define('T_TYPE_CLOSE_PARENTHESIS', 'PHPCS_T_TYPE_CLOSE_PARENTHESIS');
+}
+
 return static function (ECSConfig $ecsConfig): void {
     $ecsConfig->rules([
         BinaryOperatorSpacesFixer::class,
