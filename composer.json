@@ -7,9 +7,9 @@
         "php": "^8.0",
         "phpstan/extension-installer": "^1.0",
         "phpstan/phpstan": "^1.4 || ^2.0",
-        "phpstan/phpstan-doctrine": "^1.0",
-        "phpstan/phpstan-strict-rules": "^1.0",
-        "phpstan/phpstan-webmozart-assert": "^1.0",
+        "phpstan/phpstan-doctrine": "^1.0 || ^2.0",
+        "phpstan/phpstan-strict-rules": "^1.0 || ^2.0",
+        "phpstan/phpstan-webmozart-assert": "^1.0 || ^2.0",
         "symplify/easy-coding-standard": "^10.0 || ^11.0",
         "friendsofphp/php-cs-fixer": "^3.0",
         "slevomat/coding-standard": "^8.0"
